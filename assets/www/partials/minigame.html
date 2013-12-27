@@ -1,0 +1,95 @@
+<div class="fragment {{transitionState}}">
+	<h1>{{ minigame.name }}</h1>
+
+	<p>{{ minigame.description }}</p>
+	
+	<p>{{ minigame.message }}</p>
+
+	<div ng-if="minigame.id == 0" class="fragment {{transitionState}}" >
+	
+		<p><button class="red" ng-click="startGuessTheWord()" ng-disabled="started" >Click to start</button></p>
+	
+		<input ng-repeat="letter in word track by $index" class="letterInput" type="text" readonly maxlength="1" value="{{ letter.value }}">
+		
+		<p>Guess here</p>
+		<form name="guessForm" id="guessForm" ng-submit="guessWord(guess)">
+			<input type="text" maxlength="{{ word.length }}" ng-model="guess" ng-disabled="!started">
+			<p><button type="submit" class="red" >Guess</button></p>
+		</form>
+	</div>
+
+	<div ng-if="minigame.id == 1">
+		<button class="red" ng-click="raiseStar(0)">Push here!</button>
+
+		<div ng-repeat="star in stars" class="{{ star.name }}" style="top: {{ star.top }}%; left: {{ star.left}}%; z-index: -1;"></div>
+		
+	</div>
+
+	<div ng-if="minigame.id == 2">
+		<div id="field" style="height: 250px; width: 250px;">
+			<div ng-repeat="square in field track by $index"
+				class="dirt"
+				style="
+					left: {{ square.left }}px;
+					top: {{ square.top }}px;
+					height: 50px;
+					width: 50px;
+				";
+				ng-click="dig(square.id);"
+			>
+				<img ng-if="!square.shown" src="images/dirt.png" width="50" height="50">
+				<img ng-if="square.shown && !square.treasure" src="images/dirt_no_treasure.png" width="50" height="50">
+				<img ng-if="square.shown && square.treasure" src="images/dirt_treasure.png" width="50" height="50">
+			</div>
+		</div>
+	</div>
+
+	<div ng-if="minigame.id == 3">
+		<ul class="options">
+			<li ng-repeat="player in players">
+				<p>{{ player.name }}</p>
+				<p ng-if="player.ready" class="green">Ready</p>
+				<p ng-if="!player.ready" class="orange">Waiting</p>
+				<p>Wins: {{ player.wins }}</p>
+				<img ng-if="player.show" src="images/{{ player.choice }}.gif" width="50" height="50">
+			</li>
+		</ul>
+		
+		<p>{{ choosingMessage }}</p>
+		<ul class="options">
+			<li class="purple clickable" ng-click="choose('rock')">
+				<p>Rock</p>
+				<img src="images/rock.gif">
+			</li>
+			<li class="purple clickable" ng-click="choose('paper')">
+				<p>Paper</p>
+				<img src="images/paper.gif">
+			</li>
+			<li class="purple clickable" ng-click="choose('scissors')">
+				<p>Scissors</p>
+				<img src="images/scissors.gif">
+			</li>
+		</ul>
+	</div>
+	
+	<div ng-if="minigame.id == 4" id="trivia">
+		<ul class="options">
+			<li ng-repeat="player in players">
+				<p>{{ player.name }}</p>
+				<p ng-if="player.ready" class="green">Ready</p>
+				<p ng-if="!player.ready" class="orange">Waiting</p>
+				<p>Correct: {{ player.correct }}</p>
+				<img ng-if="player.show" src="images/{{ player.choice }}.gif" width="50" height="50">
+			</li>
+		</ul>
+		
+		<h2>{{ triviaQuestion.question }}</h2>
+		
+		<ul>
+			<li ng-click="answer(0)" class="purple clickable">{{ triviaQuestion.a }}</li>
+			<li ng-click="answer(1)" class="purple clickable">{{ triviaQuestion.b }}</li>
+			<li ng-click="answer(2)" class="purple clickable">{{ triviaQuestion.c }}</li>
+			<li ng-click="answer(3)" class="purple clickable">{{ triviaQuestion.d }}</li>
+		</ul>
+	</div>
+</div>

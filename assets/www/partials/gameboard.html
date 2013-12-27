@@ -1,0 +1,89 @@
+    <script type="text/javascript" charset="utf-8">
+
+    // Wait for PhoneGap to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // PhoneGap is ready
+    //
+    function onDeviceReady() {
+        navigator.accelerometer.getCurrentAcceleration(onSuccess, onError);
+    }
+
+    // onSuccess: Get a snapshot of the current acceleration
+    //
+    function onSuccess(acceleration) {
+        alert('Acceleration X: ' + acceleration.x + '\n' +
+              'Acceleration Y: ' + acceleration.y + '\n' +
+              'Acceleration Z: ' + acceleration.z + '\n' +
+              'Timestamp: '      + acceleration.timestamp + '\n');
+    }
+
+    // onError: Failed to get the acceleration
+    //
+    function onError() {
+        alert('onError!');
+    }
+
+    </script>
+
+<div id="board" class="fragment {{transitionState}}" style="height: {{ boardSize }}px; width: {{ boardSize }}px;">
+	<div ng-repeat="square in board track by $index"
+		class="square {{ square.color }}"
+		style="
+			left: {{ square.left * (scale - 1) }}px;
+			top: {{ square.top * (scale - 1) }}px;
+			height: {{ scale * 0.9 }}px;
+			width: {{ scale * 0.9 }}px;
+		";
+	>{{ square.content }}</div>
+	
+	<div ng-repeat="pawn in pawns"
+		class="pawn {{ pawn.color }}"
+		style="
+			left: {{ (pawn.left * (scale - 1)) + ((scale / 2) * pawn.x_alignment) + 5 }}px;
+			top: {{ (pawn.top * (scale - 1)) + ((scale / 2) * pawn.y_alignment) + 5 }}px;
+			height: {{ scale * 0.25 }}px;
+			width: {{ scale * 0.25 }}px;
+		"
+		title="{{ pawn.name }}";
+	></div>
+	
+	<div id="m1">
+		<div id="m2">
+			<p ng-if="minigameMessage" id="gameMessage" class="red">Minigame!</p>
+			<p ng-if="jackpotMessage" id="gameMessage" class="blue">{{ jackpotMessage }}</p>
+			<p ng-if="winnerMessage" id="gameMessage" class="green">{{ winnerMessage }}</p>
+		</div>
+	</div>
+</div>
+
+<div id="information" class="fragment {{transitionState}}" style="margin-left: {{ boardSize + 10 }}px; margin-top: {{ boardSize + 10 }}px">
+
+	<div class="block die">
+		<div ng-click="rollDie()"
+			id="die"
+			style="
+				background-position: 0px {{ die  * ((-scale * 1.5) | number:0) }}px;
+				height: {{ scale * 1.5 | number:0}}px;
+				width: {{ scale * 1.5 | number:0}}px;
+				background-size: {{ scale * 1.5 | number:0}}px;
+			"
+		></div>
+	</div>
+	
+	<div class="block">
+		<h2>Turn</h2>
+		<p>{{ turn }}</p>
+		<h2>Win condition</h2>
+		<p>Score {{ winCondition }} points.</p>
+	</div>
+	
+	<div class="block">
+		<h2>Positions</h2>
+		<ol>
+			<li ng-repeat="pawn in pawns | orderBy:'score':true">{{ pawn.name }}: {{ pawn.score }} points</li>
+		</ol>
+	</div>
+
+</div>
